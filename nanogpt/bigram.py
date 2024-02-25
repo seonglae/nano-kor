@@ -9,7 +9,7 @@ max_iters = 5000
 eval_interval = 300
 learning_rate = 3e-3
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-if torch.mps.is_available(): device = 'mps'
+if torch.backends.mps.is_available(): device = 'mps'
 eval_iters = 200
 # ------------
 
