@@ -3,12 +3,13 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 # hyperparameters
-batch_size = 32 # how many independent sequences will we process in parallel?
-block_size = 8 # what is the maximum context length for predictions?
-max_iters = 3000
+batch_size = 256 # how many independent sequences will we process in parallel?
+block_size = 65 # what is the maximum context length for predictions?
+max_iters = 5000
 eval_interval = 300
-learning_rate = 1e-2
+learning_rate = 3e-3
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+if torch.mps.is_available(): device = 'mps'
 eval_iters = 200
 # ------------
 
@@ -19,13 +20,14 @@ with open('input.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 # here are all the unique characters that occur in this text
-chars = sorted(list(set(text)))
-vocab_size = len(chars)
+paris = [text[i:i+2] for i in range(len(text)-1)]
+tokens = list(set(paris))
+vocab_size = len(tokens)
 # create a mapping from characters to integers
-stoi = { ch:i for i,ch in enumerate(chars) }
-itos = { i:ch for i,ch in enumerate(chars) }
-encode = lambda s: [stoi[c] for c in s] # encoder: take a string, output a list of integers
-decode = lambda l: ''.join([itos[i] for i in l]) # decoder: take a list of integers, output a string
+stoi = { ch:i for i,ch in enumerate(tokens) }
+itos = { i:ch for i,ch in enumerate(tokens) }
+encode = lambda s: [stoi[s[i:i+2]] for i in range(0, len(s)-1, 2)] # encoder: take a string, output a list of integers
+decode = lambda l: ''.join([itos[l[i]] for i in range(len(l))]) # decoder: take a list of integers, output a string
 
 # Train and test splits
 data = torch.tensor(encode(text), dtype=torch.long)
