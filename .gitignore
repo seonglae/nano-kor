@@ -8,8 +8,8 @@ __pycache__/
 *.pt
 *.pyc
 input.txt
-nanogpt/input.txt
-nanogpt/more.txt
+nanogpt/poc/input.txt
+nanogpt/poc/more.txt
 .mypy_cache
 env/
 venv/
