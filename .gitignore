@@ -11,3 +11,5 @@ input.txt
 nanogpt/input.txt
 nanogpt/more.txt
 .mypy_cache
+env/
+venv/
