@@ -13,3 +13,4 @@ nanogpt/poc/more.txt
 .mypy_cache
 env/
 venv/
+wandb
