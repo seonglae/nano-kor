@@ -21,6 +21,7 @@ import time
 import math
 import pickle
 from contextlib import nullcontext
+import logging
 
 import numpy as np
 import torch
@@ -55,7 +56,7 @@ n_embd = 768
 dropout = 0.0 # for pretraining 0 is good, for finetuning try 0.1+
 bias = False # do we use bias inside LayerNorm and Linear layers?
 # adamw optimizer
-learning_rate = 6e-4 # max learning rate
+learning_rate = 3e-4 # max learning rate
 max_iters = 600000 # total number of training iterations
 weight_decay = 1e-1
 beta1 = 0.9
@@ -221,7 +222,7 @@ def estimate_loss():
         for k in range(eval_iters):
             X, Y = get_batch(split)
             with ctx:
-                logits, loss = model(X, Y)
+                _, loss = model(X, Y)
             losses[k] = loss.item()
         out[split] = losses.mean()
     model.train()
@@ -283,7 +284,9 @@ while True:
                     'config': config,
                 }
                 print(f"saving checkpoint to {out_dir}")
-                torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
+                parent_path = os.path.join(out_dir, str(iter_num))
+                os.makedirs(parent_path, exist_ok=True)
+                torch.save(checkpoint, os.path.join(parent_path, 'ckpt.pt'))
     if iter_num == 0 and eval_only:
         break
 
@@ -325,6 +328,13 @@ while True:
             mfu = raw_model.estimate_mfu(batch_size * gradient_accumulation_steps, dt)
             running_mfu = mfu if running_mfu == -1.0 else 0.9*running_mfu + 0.1*mfu
         print(f"iter {iter_num}: loss {lossf:.4f}, time {dt*1000:.2f}ms, mfu {running_mfu*100:.2f}%")
+        if wandb_log:
+          wandb.log({
+            "loss": lossf,
+            "time": dt,
+            "mfu": running_mfu*100, # convert to percentage,
+            "lr": lr,
+          })
     iter_num += 1
     local_iter_num += 1
 
