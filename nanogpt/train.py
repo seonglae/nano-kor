@@ -21,7 +21,6 @@ import time
 import math
 import pickle
 from contextlib import nullcontext
-import logging
 
 import numpy as np
 import torch
@@ -56,7 +55,7 @@ n_embd = 768
 dropout = 0.0 # for pretraining 0 is good, for finetuning try 0.1+
 bias = False # do we use bias inside LayerNorm and Linear layers?
 # adamw optimizer
-learning_rate = 3e-4 # max learning rate
+learning_rate = 1e-4 # max learning rate
 max_iters = 600000 # total number of training iterations
 weight_decay = 1e-1
 beta1 = 0.9
@@ -329,12 +328,13 @@ while True:
             running_mfu = mfu if running_mfu == -1.0 else 0.9*running_mfu + 0.1*mfu
         print(f"iter {iter_num}: loss {lossf:.4f}, time {dt*1000:.2f}ms, mfu {running_mfu*100:.2f}%")
         if wandb_log:
-          wandb.log({
-            "loss": lossf,
-            "time": dt,
-            "mfu": running_mfu*100, # convert to percentage,
-            "lr": lr,
-          })
+            wandb.log({
+                "iter": iter_num,
+                "loss": lossf,
+                "lr": lr,
+                "time": dt,
+                "mfu": running_mfu*100, # convert to percentage
+            })
     iter_num += 1
     local_iter_num += 1
 
