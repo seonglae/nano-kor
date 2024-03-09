@@ -15,8 +15,7 @@ dependencies = [
     "torch>=2.2.1",
     "transformers>=4.38.1",
     "wandb>=0.16.3",
-    "datasets>=2.18.0",
-    "mypy>=1.9.0",
+    "datasets>=2.18.0"
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -32,7 +31,6 @@ ignore = ['E721', 'E741', 'E731']
 managed = true
 dev-dependencies = [
     "autopep8>=2.0.4",
-    "mypy>=1.8.0",
     "pip>=24.0",
     "setuptools>=69.1.1",
 ]
