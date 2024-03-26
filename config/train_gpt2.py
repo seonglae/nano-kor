@@ -4,7 +4,7 @@
 
 wandb_log = True
 wandb_project = 'nanogpt'
-wandb_run_name='hankuk-gpt'
+wandb_run_name='yokhal-sm'
 
 # these make the total batch size be ~0.5M
 # 12 batch size * 1024 block size * 5 gradaccum * 8 GPUs = 491,520
@@ -17,12 +17,12 @@ max_iters = 12000
 lr_decay_iters = 60000
 
 # eval stuff
-eval_interval = 10
-eval_iters = 20
+eval_interval = 100
+eval_iters = 10
 log_interval = 10
 
 # weight decay
 weight_decay = 1e-1
 
-init_from='resume'
-dataset = 'korcomment'
+init_from='scratch'
+dataset = 'namuwiki'
